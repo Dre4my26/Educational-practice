@@ -5,9 +5,6 @@ import requests
 import re
 
 
-# article_id = 1
-
-
 def get_all_pages(default_page='https://habr.com/ru/hub/machine_learning/top/alltime/page'):
     """
     Simple function to get the list of all the links to the pages. \n
@@ -113,9 +110,9 @@ def comments_extractor(urlToCommentsWebpage, article_id):
             if title == ' ' or article_url == ' ':
                 comments_csv.write(comment_text)
             else:
-                comments_csv.write('\n' + str(
-                    article_id) + '№' + title + '№' + article_url + '№' + num_of_comments + '№' + comment_text + '№' +
-                                   username + '№' + theme + '№' + str(comments_under_comment_counter) + '№' + date)
+                comments_csv.write('\n' + str(article_id) + '\t;' + title + '\t;' + article_url + '\t;' +
+                                   num_of_comments + '\t;' + comment_text + '\t;' + username + '\t;' +
+                                   theme + '\t;' + str(comments_under_comment_counter) + '\t;' + date)
 
     return title, comments_texts
 
@@ -128,9 +125,9 @@ def main():
             page = requests.get(extracted_link)
             soup = BeautifulSoup(page.text, 'html.parser')
             num_comments = soup.find('span', class_='tm-article-comments-counter-link__value').text.strip()
-            print(f"Количество комментариев: {num_comments}")
             if int(num_comments) != 0:
                 comments_extractor(extracted_link, article_id)
+                print(f"Количество комментариев: {num_comments}")
                 article_id += 1
             else:
                 print('В данной статье нет комментариев!')
